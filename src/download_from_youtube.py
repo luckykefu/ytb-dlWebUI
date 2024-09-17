@@ -1,28 +1,27 @@
-
 from yt_dlp import YoutubeDL
+from src.log import get_logger
 
+logger = get_logger(__name__)
 
-
-def download_from_youtube(url=None, proxy=None, output_dir='output'):
-    # 代理服务器的地址和端口
-    proxy = 'socks5://192.168.43.1:1088'
-
-    # YouTube 视频的 URL
+def download_from_youtube(url=None, proxy=None, output_dir="output"):
+    # 验证输入URL
+    if not url:
+        logger.error("No URL provided for downloading.")
+        return
+    
     URLS = url.split("\n")
-    URLS = [url.strip() for url in URLS]
+    URLS = [url.strip() for url in URLS if url.strip()]  # 去除空白项
+    
     # 设置下载选项
     ydl_opts = {
-        'proxy': proxy,  # 代理服务器
-        'paths': {'home': output_dir},  # 输出文件路径和命名规则
+        "proxy": proxy,
+        "paths": {"home": output_dir},
     }
-    # 创建 YoutubeDL 实例
-    with YoutubeDL(ydl_opts) as ydl:
-
-        ydl.download(URLS)
-    print("\nDownload completed.")
-    return
-if __name__ == '__main__':
-    url = input("Enter the YouTube URL(s) separated by new line: ")
-    proxy = 'socks5://192.168.43.1:1088'
-
-    download_from_youtube(url)
+    
+    try:
+        # 创建 YoutubeDL 实例并下载
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download(URLS)
+        logger.info("Download completed.")
+    except Exception as e:
+        logger.error(f"Failed to download: {e}")
