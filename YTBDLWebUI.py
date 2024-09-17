@@ -13,8 +13,11 @@ from src.log import get_logger
 
 logger = get_logger(__name__)
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-template_path = os.path.join(dir_path, "temp")
+
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
+output_dir = os.path.join(script_dir, "output")
 
 
 def main():
@@ -31,7 +34,7 @@ def main():
             proxy_arg = gr.Textbox(
                 label="Proxy", lines=1, value="socks5://192.168.43.1:1088"
             )
-            ytb_output_dir = gr.Textbox(label="Output Dir", value=template_path)
+            ytb_output_dir = gr.Textbox(label="Output Dir", value=output_dir)
             download_btn = gr.Button("Download")
             download_btn.click(
                 fn=download_from_youtube,
